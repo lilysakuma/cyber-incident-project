@@ -1,0 +1,99 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+nav {
+    background: #1f3b5b;
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav h1 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.nav-links a {
+    color: white;
+    margin-left: 16px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.flash {
+    background: #dff0d8;
+    border: 1px solid #b7ddb0;
+    padding: 10px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+}
+
+.card,
+.form-card {
+    background: white;
+    padding: 18px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #eaf1f8;
+}
+
+input,
+textarea,
+select,
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    box-sizing: border-box;
+}
+
+button,
+.button-link {
+    background: #1f3b5b;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    width: auto;
+    margin-right: 8px;
+}
+
+button:hover,
+.button-link:hover {
+    background: #2c527a;
+}

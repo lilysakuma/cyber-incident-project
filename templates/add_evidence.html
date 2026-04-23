@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add Evidence to Incident #{{ incident.incident_id }}</h2>
+
+<form method="post" class="form-card">
+    <label>Evidence Type</label>
+    <select name="evidence_type">
+        <option value="url">url</option>
+        <option value="domain">domain</option>
+        <option value="hash">hash</option>
+        <option value="cve">cve</option>
+        <option value="email_header">email_header</option>
+        <option value="file">file</option>
+    </select>
+
+    <label>Value</label>
+    <input type="text" name="value" required>
+
+    <label>File Path (optional)</label>
+    <input type="text" name="file_path">
+
+    <label>Added By</label>
+    <select name="added_by" required>
+        {% for user in users %}
+        <option value="{{ user.user_id }}">{{ user.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Add Evidence</button>
+</form>
+{% endblock %}

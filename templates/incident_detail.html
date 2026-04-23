@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Incident #{{ incident.incident_id }} - {{ incident.title }}</h2>
+
+<div class="card">
+    <p><strong>Type:</strong> {{ incident.incident_type }}</p>
+    <p><strong>Status:</strong> {{ incident.status }}</p>
+    <p><strong>Severity:</strong> {{ incident.severity }}</p>
+    <p><strong>Reporter:</strong> {{ incident.reporter_name }}</p>
+    <p><strong>Assignee:</strong> {{ incident.assignee_name if incident.assignee_name else 'Unassigned' }}</p>
+    <p><strong>Description:</strong> {{ incident.description }}</p>
+    <p><strong>Created:</strong> {{ incident.created_at }}</p>
+    <p><strong>Updated:</strong> {{ incident.updated_at }}</p>
+    <a class="button-link" href="{{ url_for('edit_incident', incident_id=incident.incident_id) }}">Edit Incident</a>
+    <a class="button-link" href="{{ url_for('add_evidence', incident_id=incident.incident_id) }}">Add Evidence</a>
+    <a class="button-link" href="{{ url_for('add_task', incident_id=incident.incident_id) }}">Add Task</a>
+</div>
+
+<h3>Evidence</h3>
+<div class="card">
+    {% if evidence_items %}
+    <ul>
+        {% for item in evidence_items %}
+        <li>
+            <strong>{{ item.evidence_type }}</strong>: {{ item.value }}
+            {% if item.added_by_name %}(added by {{ item.added_by_name }}){% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No evidence added yet.</p>
+    {% endif %}
+</div>
+
+<h3>Tasks</h3>
+<div class="card">
+    {% if tasks %}
+    <ul>
+        {% for task in tasks %}
+        <li>
+            <strong>{{ task.task_type }}</strong> - {{ task.status }}
+            {% if task.due_date %}(Due: {{ task.due_date }}){% endif %}
+            <br>{{ task.notes }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No tasks added yet.</p>
+    {% endif %}
+</div>
+
+<h3>Assets</h3>
+<div class="card">
+    {% if assets %}
+    <ul>
+        {% for asset in assets %}
+        <li>{{ asset.asset_type }} - {{ asset.identifier }} ({{ asset.owner }})</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No linked assets yet.</p>
+    {% endif %}
+</div>
+
+<h3>Tags</h3>
+<div class="card">
+    {% if tags %}
+    <ul>
+        {% for tag in tags %}
+        <li>{{ tag.name }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No tags linked yet.</p>
+    {% endif %}
+</div>
+
+<h3>Vulnerability Enrichment</h3>
+<div class="card">
+    {% if vuln_matches %}
+    <ul>
+        {% for vuln in vuln_matches %}
+        <li>
+            <strong>{{ vuln.cve_id }}</strong> -
+            {{ vuln.vendor }} / {{ vuln.product }} /
+            {{ vuln.vulnerability_name }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No matching vulnerability enrichment found.</p>
+    {% endif %}
+</div>
+
+<h3>Related Incidents</h3>
+<div class="card">
+    {% if related_incidents %}
+    <ul>
+        {% for related in related_incidents %}
+        <li>
+            <a href="{{ url_for('incident_detail', incident_id=related.incident_id) }}">
+                Incident #{{ related.incident_id }} - {{ related.title }}
+            </a>
+            ({{ related.status }})
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No related incidents found.</p>
+    {% endif %}
+</div>
+{% endblock %}

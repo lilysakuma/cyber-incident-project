@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Edit Incident #{{ incident.incident_id }}</h2>
+
+<form method="post" class="form-card">
+    <label>Title</label>
+    <input type="text" name="title" value="{{ incident.title }}" required>
+
+    <label>Description</label>
+    <textarea name="description">{{ incident.description }}</textarea>
+
+    <label>Incident Type</label>
+    <input type="text" name="incident_type" value="{{ incident.incident_type }}" required>
+
+    <label>Status</label>
+    <select name="status">
+        {% for option in ['new', 'triaged', 'investigating', 'resolved', 'closed'] %}
+        <option value="{{ option }}" {% if incident.status==option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Severity</label>
+    <input type="number" name="severity" min="1" max="5" value="{{ incident.severity }}" required>
+
+    <label>Assign To</label>
+    <select name="assignee_id">
+        <option value="">Unassigned</option>
+        {% for user in users %}
+        <option value="{{ user.user_id }}" {% if incident.assignee_id==user.user_id %}selected{% endif %}>
+            {{ user.name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}
