@@ -15,6 +15,7 @@
             <th>View</th>
         </tr>
     </thead>
+
     <tbody>
         {% for incident in incidents %}
         <tr>
@@ -24,7 +25,9 @@
             <td>{{ incident.status }}</td>
             <td>{{ incident.severity }}</td>
             <td>{{ incident.reporter_name }}</td>
-            <td><a href="{{ url_for('incident_detail', incident_id=incident.incident_id) }}">Open</a></td>
+            <td>
+                <a href="{{ url_for('incident_detail', incident_id=incident.incident_id) }}">Open</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

@@ -72,16 +72,12 @@ def create_incident():
         reporter_id = request.form["reporter_id"]
         assignee_id = request.form["assignee_id"] or None
 
-        if not title or not incident_type or not severity or not reporter_id:
-            flash("Please fill in all required fields.")
-            conn.close()
-            return render_template("create_incident.html", users=users)
-
         conn.execute("""
             INSERT INTO incidents
             (title, description, incident_type, status, severity, reporter_id, assignee_id, created_at, updated_at)
             VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         """, (title, description, incident_type, status, severity, reporter_id, assignee_id))
+
         conn.commit()
         conn.close()
         flash("Incident created successfully.")
@@ -163,7 +159,6 @@ def incident_detail(incident_id):
     """, (incident_id, incident_id)).fetchall()
 
     users = conn.execute("SELECT * FROM users ORDER BY name").fetchall()
-
     conn.close()
 
     return render_template(
@@ -183,7 +178,11 @@ def incident_detail(incident_id):
 def edit_incident(incident_id):
     conn = get_db_connection()
 
-    incident = conn.execute("SELECT * FROM incidents WHERE incident_id = ?", (incident_id,)).fetchone()
+    incident = conn.execute(
+        "SELECT * FROM incidents WHERE incident_id = ?",
+        (incident_id,)
+    ).fetchone()
+
     users = conn.execute("SELECT * FROM users ORDER BY name").fetchall()
 
     if incident is None:
@@ -209,6 +208,7 @@ def edit_incident(incident_id):
                 updated_at = CURRENT_TIMESTAMP
             WHERE incident_id = ?
         """, (title, description, incident_type, status, severity, assignee_id, incident_id))
+
         conn.commit()
         conn.close()
         flash("Incident updated successfully.")
@@ -218,10 +218,32 @@ def edit_incident(incident_id):
     return render_template("edit_incident.html", incident=incident, users=users)
 
 
+@app.route("/incident/<int:incident_id>/delete", methods=["POST"])
+def delete_incident(incident_id):
+    conn = get_db_connection()
+
+    conn.execute("DELETE FROM tasks WHERE incident_id = ?", (incident_id,))
+    conn.execute("DELETE FROM evidence WHERE incident_id = ?", (incident_id,))
+    conn.execute("DELETE FROM incident_tag WHERE incident_id = ?", (incident_id,))
+    conn.execute("DELETE FROM incident_asset WHERE incident_id = ?", (incident_id,))
+    conn.execute("DELETE FROM incidents WHERE incident_id = ?", (incident_id,))
+
+    conn.commit()
+    conn.close()
+
+    flash("Incident deleted successfully.")
+    return redirect(url_for("home"))
+
+
 @app.route("/incident/<int:incident_id>/evidence/add", methods=["GET", "POST"])
 def add_evidence(incident_id):
     conn = get_db_connection()
-    incident = conn.execute("SELECT * FROM incidents WHERE incident_id = ?", (incident_id,)).fetchone()
+
+    incident = conn.execute(
+        "SELECT * FROM incidents WHERE incident_id = ?",
+        (incident_id,)
+    ).fetchone()
+
     users = conn.execute("SELECT * FROM users ORDER BY name").fetchall()
 
     if incident is None:
@@ -254,7 +276,12 @@ def add_evidence(incident_id):
 @app.route("/incident/<int:incident_id>/task/add", methods=["GET", "POST"])
 def add_task(incident_id):
     conn = get_db_connection()
-    incident = conn.execute("SELECT * FROM incidents WHERE incident_id = ?", (incident_id,)).fetchone()
+
+    incident = conn.execute(
+        "SELECT * FROM incidents WHERE incident_id = ?",
+        (incident_id,)
+    ).fetchone()
+
     users = conn.execute("SELECT * FROM users ORDER BY name").fetchall()
 
     if incident is None:
@@ -272,6 +299,7 @@ def add_task(incident_id):
             INSERT INTO tasks (incident_id, created_by, task_type, status, due_date, notes)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (incident_id, created_by, task_type, status, due_date or None, notes))
+
         conn.commit()
         conn.close()
         flash("Task added successfully.")
